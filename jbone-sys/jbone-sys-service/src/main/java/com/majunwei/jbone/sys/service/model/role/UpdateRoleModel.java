@@ -1,11 +1,19 @@
 package com.majunwei.jbone.sys.service.model.role;
 
-import lombok.Data;
-
 import javax.validation.constraints.Min;
+
+import lombok.Data;
 
 @Data
 public class UpdateRoleModel extends CreateRoleModel {
-    @Min(value = 1,message = "ID不能为空，且必须大于0")
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Min(value = 1, message = "ID不能为空，且必须大于0")
     private int id;
 }

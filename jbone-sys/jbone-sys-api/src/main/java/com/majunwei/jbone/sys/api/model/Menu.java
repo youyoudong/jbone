@@ -1,10 +1,9 @@
 package com.majunwei.jbone.sys.api.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.List;
 
-public class Menu implements Serializable,Comparable<Menu> {
+public class Menu implements Serializable, Comparable<Menu> {
     private int id;
     private Integer systemId;
     private Integer pid;
@@ -96,7 +95,6 @@ public class Menu implements Serializable,Comparable<Menu> {
         this.icon = icon;
     }
 
-    @Override
     public int compareTo(Menu o) {
         return o.orders.compareTo(this.orders);
     }

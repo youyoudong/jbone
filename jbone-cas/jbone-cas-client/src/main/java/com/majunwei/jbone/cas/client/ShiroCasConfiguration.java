@@ -1,11 +1,12 @@
 package com.majunwei.jbone.cas.client;
 
-import com.majunwei.jbone.cas.client.listener.JboneCasSessionListener;
-import com.majunwei.jbone.cas.client.realm.JboneCasRealm;
-import com.majunwei.jbone.cas.client.session.JboneCasSessionDao;
-import com.majunwei.jbone.cas.client.session.JboneCasSessionFactory;
-import com.majunwei.jbone.configuration.JboneConfiguration;
-import com.majunwei.jbone.sys.api.UserApi;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.servlet.Filter;
+
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.cas.CasFilter;
 import org.apache.shiro.cas.CasSubjectFactory;
@@ -15,27 +16,24 @@ import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.filter.authc.LogoutFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.cloud.netflix.feign.FeignClientsConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
-import javax.servlet.Filter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.majunwei.jbone.cas.client.listener.JboneCasSessionListener;
+import com.majunwei.jbone.cas.client.realm.JboneCasRealm;
+import com.majunwei.jbone.cas.client.session.JboneCasSessionDao;
+import com.majunwei.jbone.cas.client.session.JboneCasSessionFactory;
+import com.majunwei.jbone.configuration.JboneConfiguration;
+import com.majunwei.jbone.sys.api.UserApi;
 
 /**
  * Shiro集成Cas配置
@@ -46,12 +44,13 @@ public class ShiroCasConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(ShiroCasConfiguration.class);
 
-
     @Bean
-    public JboneCasRealm getJboneCasRealm(EhCacheManager ehCacheManager,UserApi userApi,JboneConfiguration jboneConfiguration){
-        JboneCasRealm realm = new JboneCasRealm(ehCacheManager,userApi,jboneConfiguration.getSys().getServerName());
+    public JboneCasRealm getJboneCasRealm(EhCacheManager ehCacheManager, UserApi userApi,
+            JboneConfiguration jboneConfiguration) {
+        JboneCasRealm realm = new JboneCasRealm(ehCacheManager, userApi, jboneConfiguration.getSys().getServerName());
         realm.setCasServerUrlPrefix(jboneConfiguration.getCas().getCasServerUrl());
-        realm.setCasService(jboneConfiguration.getCas().getCurrentServerUrlPrefix() + jboneConfiguration.getCas().getCasFilterUrlPattern());
+        realm.setCasService(jboneConfiguration.getCas().getCurrentServerUrlPrefix()
+                + jboneConfiguration.getCas().getCasFilterUrlPattern());
         return realm;
     }
 
@@ -69,7 +68,7 @@ public class ShiroCasConfiguration {
     public FilterRegistrationBean filterRegistrationBean() {
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(new DelegatingFilterProxy("shiroFilter"));
-        //  该值缺省为false,表示生命周期由SpringApplicationContext管理,设置为true则表示由ServletContainer管理
+        // 该值缺省为false,表示生命周期由SpringApplicationContext管理,设置为true则表示由ServletContainer管理
         filterRegistration.addInitParameter("targetFilterLifecycle", "true");
         filterRegistration.setEnabled(true);
         filterRegistration.addUrlPatterns("/*");
@@ -89,10 +88,11 @@ public class ShiroCasConfiguration {
     }
 
     @Bean(name = "securityManager")
-    public DefaultWebSecurityManager getDefaultWebSecurityManager(JboneCasRealm jboneCasRealm,DefaultWebSessionManager sessionManager) {
+    public DefaultWebSecurityManager getDefaultWebSecurityManager(JboneCasRealm jboneCasRealm,
+            DefaultWebSessionManager sessionManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(jboneCasRealm);
-        //用户授权/认证信息Cache, 采用EhCache 缓存
+        // 用户授权/认证信息Cache, 采用EhCache 缓存
         securityManager.setCacheManager(getEhCacheManager());
         securityManager.setSubjectFactory(new CasSubjectFactory());
         securityManager.setSessionManager(sessionManager);
@@ -101,7 +101,8 @@ public class ShiroCasConfiguration {
     }
 
     @Bean(name = "sessionManager")
-    public DefaultWebSessionManager getDefaultWebSessionManager(SessionListener sessionListener, SessionDAO sessionDao, SessionFactory sessionFactory,JboneConfiguration jboneConfiguration){
+    public DefaultWebSessionManager getDefaultWebSessionManager(SessionListener sessionListener, SessionDAO sessionDao,
+            SessionFactory sessionFactory, JboneConfiguration jboneConfiguration) {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setGlobalSessionTimeout(jboneConfiguration.getCas().getClientSessionTimeout());
         sessionManager.setSessionValidationSchedulerEnabled(false);
@@ -112,26 +113,25 @@ public class ShiroCasConfiguration {
     }
 
     @Bean(name = "sessionDao")
-    public SessionDAO getSessionDao(StringRedisTemplate redisTemplate){
+    public SessionDAO getSessionDao(StringRedisTemplate redisTemplate) {
         JboneCasSessionDao sessionDao = new JboneCasSessionDao(redisTemplate);
 
         return sessionDao;
     }
 
     @Bean(name = "sessionListener")
-    public SessionListener getSessionListener(){
+    public SessionListener getSessionListener() {
         return new JboneCasSessionListener();
     }
 
     @Bean(name = "sessionFactory")
-    public SessionFactory getSessionFactory(){
+    public SessionFactory getSessionFactory() {
         return new JboneCasSessionFactory();
     }
 
-
-
     @Bean
-    public AuthorizationAttributeSourceAdvisor getAuthorizationAttributeSourceAdvisor(DefaultWebSecurityManager securityManager) {
+    public AuthorizationAttributeSourceAdvisor getAuthorizationAttributeSourceAdvisor(
+            DefaultWebSecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
@@ -140,15 +140,17 @@ public class ShiroCasConfiguration {
     /**
      * 加载shiroFilter权限控制规则
      */
-    private void loadShiroFilterChain(ShiroFilterFactoryBean shiroFilterFactoryBean,JboneConfiguration jboneConfiguration){
-        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
+    private void loadShiroFilterChain(ShiroFilterFactoryBean shiroFilterFactoryBean,
+            JboneConfiguration jboneConfiguration) {
+        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
         filterChainDefinitionMap.put(jboneConfiguration.getCas().getCasFilterUrlPattern(), "casFilter");// shiro集成cas后，首先添加该规则
-
-        //添加jbone.cas的配置规则
-        if(jboneConfiguration.getCas().getFilterChainDefinition() != null){
+        filterChainDefinitionMap.put("/logout", "logout");
+        // 添加jbone.cas的配置规则
+        if (jboneConfiguration.getCas().getFilterChainDefinition() != null) {
             filterChainDefinitionMap.putAll(jboneConfiguration.getCas().getFilterChainDefinition());
         }
+
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
     }
 
@@ -160,7 +162,7 @@ public class ShiroCasConfiguration {
         CasFilter casFilter = new CasFilter();
         casFilter.setName("casFilter");
         casFilter.setEnabled(true);
-        //失败后跳转到CAS登录页面
+        // 失败后跳转到CAS登录页面
         casFilter.setFailureUrl(jboneConfiguration.getCas().getEncodedLoginUrl()); // 我们选择认证失败后再打开登录页面
         return casFilter;
     }
@@ -169,7 +171,8 @@ public class ShiroCasConfiguration {
      * ShiroFilter
      */
     @Bean(name = "shiroFilter")
-    public ShiroFilterFactoryBean getShiroFilterFactoryBean(DefaultWebSecurityManager securityManager, CasFilter casFilter,JboneConfiguration jboneConfiguration) {
+    public ShiroFilterFactoryBean getShiroFilterFactoryBean(DefaultWebSecurityManager securityManager,
+            CasFilter casFilter, JboneConfiguration jboneConfiguration) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 
         // SecurityManager，Shiro安全管理器
@@ -181,11 +184,17 @@ public class ShiroCasConfiguration {
         shiroFilterFactoryBean.setSuccessUrl(jboneConfiguration.getCas().getSuccessUrl());
         shiroFilterFactoryBean.setUnauthorizedUrl(jboneConfiguration.getCas().getUnauthorizedUrl());
         // 添加casFilter到shiroFilter中
-        Map<String, Filter> filters = new HashMap<>();
+        Map<String, Filter> filters = new HashMap<String, Filter>();
         filters.put("casFilter", casFilter);
+
+        // 注销
+        LogoutFilter logoutFilter = new LogoutFilter();
+        logoutFilter.setRedirectUrl(jboneConfiguration.getCas().getEncodedLogoutUrl());
+
+        filters.put("logout", logoutFilter);
         shiroFilterFactoryBean.setFilters(filters);
 
-        loadShiroFilterChain(shiroFilterFactoryBean,jboneConfiguration);
+        loadShiroFilterChain(shiroFilterFactoryBean, jboneConfiguration);
         return shiroFilterFactoryBean;
     }
 

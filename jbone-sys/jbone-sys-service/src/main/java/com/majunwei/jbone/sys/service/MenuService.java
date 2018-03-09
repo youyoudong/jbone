@@ -1,41 +1,42 @@
 package com.majunwei.jbone.sys.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.majunwei.jbone.sys.dao.domain.RbacMenuEntity;
 import com.majunwei.jbone.sys.dao.repository.RbacMenuRepository;
 import com.majunwei.jbone.sys.service.model.menu.CreateMenuModel;
 import com.majunwei.jbone.sys.service.model.menu.TreeMenuModel;
 import com.majunwei.jbone.sys.service.model.menu.UpdateMenuModel;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class MenuService {
     @Autowired
     private RbacMenuRepository rbacMenuRepository;
 
-    //获取树形菜单
-    public List<TreeMenuModel> findBySystemId(int systemId){
-        List<TreeMenuModel> menuModelList = getTreeMenu(systemId,null);
+    // 获取树形菜单
+    public List<TreeMenuModel> findBySystemId(int systemId) {
+        List<TreeMenuModel> menuModelList = getTreeMenu(systemId, null);
         return menuModelList;
     }
 
-    private List<TreeMenuModel> getTreeMenu(int systemId,TreeMenuModel menuModel){
+    private List<TreeMenuModel> getTreeMenu(int systemId, TreeMenuModel menuModel) {
         int pid = 0;
-        if(menuModel != null){
+        if (menuModel != null) {
             pid = menuModel.getId();
         }
-        List<RbacMenuEntity> menuEntityList = rbacMenuRepository.findByPidAndSystemIdOrderByOrdersDesc(pid,systemId);
-        List<TreeMenuModel> menuModelList = new ArrayList<>();
-        if(menuEntityList != null && !menuEntityList.isEmpty()){
-            for (RbacMenuEntity menuEntity : menuEntityList){
+        List<RbacMenuEntity> menuEntityList = rbacMenuRepository.findByPidAndSystemIdOrderByOrdersDesc(pid, systemId);
+        List<TreeMenuModel> menuModelList = new ArrayList<TreeMenuModel>();
+        if (menuEntityList != null && !menuEntityList.isEmpty()) {
+            for (RbacMenuEntity menuEntity : menuEntityList) {
                 TreeMenuModel treeMenuModel = new TreeMenuModel();
-                BeanUtils.copyProperties(menuEntity,treeMenuModel);
+                BeanUtils.copyProperties(menuEntity, treeMenuModel);
                 menuModelList.add(treeMenuModel);
-                getTreeMenu(systemId,treeMenuModel);
+                getTreeMenu(systemId, treeMenuModel);
             }
 
             if (menuModel != null) {
@@ -46,28 +47,27 @@ public class MenuService {
         return menuModelList;
     }
 
-
-    public TreeMenuModel get(int id){
+    public TreeMenuModel get(int id) {
         RbacMenuEntity menuEntity = rbacMenuRepository.findOne(id);
         TreeMenuModel menuModel = new TreeMenuModel();
-        BeanUtils.copyProperties(menuEntity,menuModel);
+        BeanUtils.copyProperties(menuEntity, menuModel);
         return menuModel;
     }
 
-    public void add(CreateMenuModel menuModel){
+    public void add(CreateMenuModel menuModel) {
         RbacMenuEntity menuEntity = new RbacMenuEntity();
-        BeanUtils.copyProperties(menuModel,menuEntity);
+        BeanUtils.copyProperties(menuModel, menuEntity);
         rbacMenuRepository.save(menuEntity);
     }
 
-    public void delete(int id){
+    public void delete(int id) {
         RbacMenuEntity menuEntity = rbacMenuRepository.getOne(id);
         rbacMenuRepository.delete(menuEntity);
     }
 
-    public void update(UpdateMenuModel menuModel){
+    public void update(UpdateMenuModel menuModel) {
         RbacMenuEntity menuEntity = rbacMenuRepository.getOne(menuModel.getId());
-        BeanUtils.copyProperties(menuModel,menuEntity);
+        BeanUtils.copyProperties(menuModel, menuEntity);
         rbacMenuRepository.save(menuEntity);
     }
 }
