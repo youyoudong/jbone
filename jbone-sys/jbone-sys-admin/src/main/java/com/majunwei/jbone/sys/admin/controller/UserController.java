@@ -18,25 +18,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.majunwei.jbone.common.ui.result.Result;
-import com.majunwei.jbone.common.utils.ResultUtils;
-import com.majunwei.jbone.sys.dao.domain.RbacMenuEntity;
-import com.majunwei.jbone.sys.dao.domain.RbacOrganizationEntity;
-import com.majunwei.jbone.sys.dao.domain.RbacPermissionEntity;
-import com.majunwei.jbone.sys.dao.domain.RbacSystemEntity;
-import com.majunwei.jbone.sys.dao.domain.RbacUserEntity;
-import com.majunwei.jbone.sys.service.PermissionService;
-import com.majunwei.jbone.sys.service.RoleService;
-import com.majunwei.jbone.sys.service.SystemService;
-import com.majunwei.jbone.sys.service.UserService;
-import com.majunwei.jbone.sys.service.model.ListModel;
-import com.majunwei.jbone.sys.service.model.common.AssignPermissionModel;
-import com.majunwei.jbone.sys.service.model.user.AssignMenuModel;
-import com.majunwei.jbone.sys.service.model.user.AssignOrganizationModel;
-import com.majunwei.jbone.sys.service.model.user.AssignRoleModel;
-import com.majunwei.jbone.sys.service.model.user.CreateUserModel;
-import com.majunwei.jbone.sys.service.model.user.UpdateUserModel;
-import com.majunwei.jbone.sys.service.model.user.UserBaseInfoModel;
+import cn.jbone.common.ui.result.Result;
+import cn.jbone.common.utils.ResultUtils;
+import cn.jbone.sys.core.dao.domain.RbacMenuEntity;
+import cn.jbone.sys.core.dao.domain.RbacOrganizationEntity;
+import cn.jbone.sys.core.dao.domain.RbacPermissionEntity;
+import cn.jbone.sys.core.dao.domain.RbacSystemEntity;
+import cn.jbone.sys.core.dao.domain.RbacUserEntity;
+import cn.jbone.sys.core.service.PermissionService;
+import cn.jbone.sys.core.service.RoleService;
+import cn.jbone.sys.core.service.SystemService;
+import cn.jbone.sys.core.service.UserService;
+import cn.jbone.sys.core.service.model.ListModel;
+import cn.jbone.sys.core.service.model.common.AssignPermissionModel;
+import cn.jbone.sys.core.service.model.user.AssignMenuModel;
+import cn.jbone.sys.core.service.model.user.AssignOrganizationModel;
+import cn.jbone.sys.core.service.model.user.AssignRoleModel;
+import cn.jbone.sys.core.service.model.user.CreateUserModel;
+import cn.jbone.sys.core.service.model.user.UpdateUserModel;
+import cn.jbone.sys.core.service.model.user.UserBaseInfoModel;
 
 @Controller
 @RequestMapping("user")

@@ -16,7 +16,8 @@ import org.springframework.boot.SpringBootVersion;
 import org.springframework.core.env.Environment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.majunwei.jbone.common.utils.AsciiArtUtils;
+
+import cn.jbone.common.utils.AsciiArtUtils;
 
 public class AbastractJboneBanner implements Banner {
     /**
@@ -33,6 +34,7 @@ public class AbastractJboneBanner implements Banner {
 
     private static final ObjectMapper MAPPER = new ObjectMapper().findAndRegisterModules();
 
+    @Override
     public void printBanner(final Environment environment, final Class<?> sourceClass, final PrintStream out) {
         AsciiArtUtils.printAsciiArt(out, getTitle(), collectEnvironmentInfo(environment, sourceClass));
     }

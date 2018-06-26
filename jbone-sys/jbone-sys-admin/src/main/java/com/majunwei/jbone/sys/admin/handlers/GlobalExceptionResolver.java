@@ -15,8 +15,9 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
-import com.majunwei.jbone.common.ui.result.Result;
-import com.majunwei.jbone.common.utils.ResultUtils;
+
+import cn.jbone.common.ui.result.Result;
+import cn.jbone.common.utils.ResultUtils;
 
 /**
  * 全局异常处理器 1、AJax异常 2、error页面跳转
@@ -24,6 +25,7 @@ import com.majunwei.jbone.common.utils.ResultUtils;
 @Component
 public class GlobalExceptionResolver implements HandlerExceptionResolver {
 
+    @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object o,
             Exception e) {
         boolean isajax = isAjax(request, response);

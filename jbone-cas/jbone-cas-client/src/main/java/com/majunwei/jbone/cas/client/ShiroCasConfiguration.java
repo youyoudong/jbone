@@ -28,12 +28,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
-import com.majunwei.jbone.cas.client.listener.JboneCasSessionListener;
-import com.majunwei.jbone.cas.client.realm.JboneCasRealm;
-import com.majunwei.jbone.cas.client.session.JboneCasSessionDao;
-import com.majunwei.jbone.cas.client.session.JboneCasSessionFactory;
-import com.majunwei.jbone.configuration.JboneConfiguration;
-import com.majunwei.jbone.sys.api.UserApi;
+import cn.jbone.cas.client.listener.JboneCasSessionListener;
+import cn.jbone.cas.client.realm.JboneCasRealm;
+import cn.jbone.cas.client.session.JboneCasSessionDao;
+import cn.jbone.cas.client.session.JboneCasSessionFactory;
+import cn.jbone.configuration.JboneConfiguration;
+import cn.jbone.sys.api.UserApi;
 
 /**
  * Shiro集成Cas配置

@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>jbone-cas</artifactId>
-        <groupId>com.majunwei</groupId>
+        <groupId>cn.jbone</groupId>
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -12,6 +12,18 @@
 
     <name>jbone-cas-client</name>
     <url>http://maven.apache.org</url>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,15 +57,15 @@
         </dependency>
 
         <dependency>
-            <groupId>com.majunwei</groupId>
+            <groupId>cn.jbone</groupId>
             <artifactId>jbone-sys-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.majunwei</groupId>
+            <groupId>cn.jbone</groupId>
             <artifactId>jbone-configuration</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.majunwei</groupId>
+            <groupId>cn.jbone</groupId>
             <artifactId>jbone-sys-api-feign</artifactId>
         </dependency>
     </dependencies>

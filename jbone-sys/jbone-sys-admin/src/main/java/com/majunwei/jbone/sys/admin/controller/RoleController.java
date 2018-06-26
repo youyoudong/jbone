@@ -17,21 +17,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.majunwei.jbone.common.ui.result.Result;
-import com.majunwei.jbone.common.utils.ResultUtils;
-import com.majunwei.jbone.sys.dao.domain.RbacMenuEntity;
-import com.majunwei.jbone.sys.dao.domain.RbacPermissionEntity;
-import com.majunwei.jbone.sys.dao.domain.RbacRoleEntity;
-import com.majunwei.jbone.sys.dao.domain.RbacSystemEntity;
-import com.majunwei.jbone.sys.service.PermissionService;
-import com.majunwei.jbone.sys.service.RoleService;
-import com.majunwei.jbone.sys.service.SystemService;
-import com.majunwei.jbone.sys.service.model.ListModel;
-import com.majunwei.jbone.sys.service.model.common.AssignPermissionModel;
-import com.majunwei.jbone.sys.service.model.role.AssignMenuModel;
-import com.majunwei.jbone.sys.service.model.role.CreateRoleModel;
-import com.majunwei.jbone.sys.service.model.role.SimpleRoleModel;
-import com.majunwei.jbone.sys.service.model.role.UpdateRoleModel;
+import cn.jbone.common.ui.result.Result;
+import cn.jbone.common.utils.ResultUtils;
+import cn.jbone.sys.core.dao.domain.RbacMenuEntity;
+import cn.jbone.sys.core.dao.domain.RbacPermissionEntity;
+import cn.jbone.sys.core.dao.domain.RbacRoleEntity;
+import cn.jbone.sys.core.dao.domain.RbacSystemEntity;
+import cn.jbone.sys.core.service.PermissionService;
+import cn.jbone.sys.core.service.RoleService;
+import cn.jbone.sys.core.service.SystemService;
+import cn.jbone.sys.core.service.model.ListModel;
+import cn.jbone.sys.core.service.model.common.AssignPermissionModel;
+import cn.jbone.sys.core.service.model.role.AssignMenuModel;
+import cn.jbone.sys.core.service.model.role.CreateRoleModel;
+import cn.jbone.sys.core.service.model.role.SimpleRoleModel;
+import cn.jbone.sys.core.service.model.role.UpdateRoleModel;
 
 @Controller
 @RequestMapping("role")

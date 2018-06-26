@@ -1,23 +1,19 @@
 package org.apereo.cas.web.realm;
 
-import com.majunwei.jbone.sys.api.UserApi;
-import com.majunwei.jbone.sys.api.model.UserInfoModel;
-import com.majunwei.jbone.sys.api.model.UserModel;
-import org.apereo.cas.services.RegisteredServiceAccessStrategyUtils;
-import org.apereo.cas.services.UnauthorizedServiceForPrincipalException;
+import cn.jbone.common.rpc.Result;
+import cn.jbone.sys.api.UserApi;
+import cn.jbone.sys.api.dto.response.UserBaseInfoResponseDTO;
+import cn.jbone.sys.api.dto.response.UserInfoResponseDTO;
+import org.apache.shiro.util.ByteSource;
 import org.apereo.cas.web.SpringManager;
-import org.apereo.cas.web.rpc.sys.UserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -32,28 +28,41 @@ public class JboneCasRealm extends AuthorizingRealm {
         setName("JboneCasRealm");
     }
 
-    private UserService getUserService(){
+    private UserApi getUserApi(){
         ApplicationContext context = SpringManager.getApplicationContext();
-        UserService userService = context.getBean(UserService.class);
-        return userService;
+        UserApi userApi = context.getBean(UserApi.class);
+        return userApi;
     }
 
+    /**
+     * 验证登录
+     * @param authcToken
+     * @return
+     * @throws AuthenticationException
+     */
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-        UserInfoModel userInfoModel = getUserService().getUserByName(token.getUsername());
-        if(userInfoModel == null){
+        Result<UserBaseInfoResponseDTO> userInfoModel = getUserApi().getUserByName(token.getUsername());
+        if(userInfoModel == null || !userInfoModel.isSuccess() || userInfoModel.getData() == null){
             throw new AuthenticationException("用户不存在");
         }
 
-        return new SimpleAuthenticationInfo(userInfoModel.getUsername(), userInfoModel.getPassword(), getName());
+        ByteSource credentialsSalt = ByteSource.Util.bytes(userInfoModel.getData().getSalt());
+
+        return new SimpleAuthenticationInfo(userInfoModel.getData().getUsername(), userInfoModel.getData().getPassword(),credentialsSalt, getName());
     }
 
 
+    /**
+     * 获取登录用户权限信息
+     * @param principals
+     * @return
+     */
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String userName = (String) principals.fromRealm(getName()).iterator().next();
-        UserModel userModel = getUserService().getUserDetailByName(userName);
-        Set<String> roles = userModel.getRoles();
-        Set<String> permissions = userModel.getPermissions();
+        Result<UserInfoResponseDTO> userModel = getUserApi().getUserDetailByName(userName);
+        Set<String> roles = userModel.getData().getRoles();
+        Set<String> permissions = userModel.getData().getPermissions();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
         if(roles != null && !roles.isEmpty()){

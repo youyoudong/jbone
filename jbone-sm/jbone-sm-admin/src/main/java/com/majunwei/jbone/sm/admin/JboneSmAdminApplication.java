@@ -8,6 +8,7 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.cloud.netflix.turbine.EnableTurbine;
 
+import cn.jbone.sm.admin.JboneSmAdminBanner;
 import de.codecentric.boot.admin.config.EnableAdminServer;
 
 @EnableTurbine
